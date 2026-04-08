@@ -1,0 +1,18 @@
+{
+  "name": "farmbot",
+  "version": "1.0.0",
+  "description": "AFK mineflayer bot for a Minecraft lobby flow",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "check": "node --check index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.1",
+    "mineflayer": "^4.37.0",
+    "vec3": "^0.2.0"
+  }
+}

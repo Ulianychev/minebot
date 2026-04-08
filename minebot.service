@@ -1,0 +1,17 @@
+[Unit]
+Description=Mineflayer AFK Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=minebot
+Group=minebot
+WorkingDirectory=/opt/minebot
+ExecStart=/usr/bin/node /opt/minebot/index.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
