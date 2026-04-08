@@ -8,10 +8,10 @@ const { Vec3 } = require('vec3');
 const config = {
   host: process.env.MC_HOST || 'CHANGE_ME',
   port: Number.parseInt(process.env.MC_PORT || '25565', 10),
-  username: process.env.MC_USERNAME || 'AFKgoodbot5',
+  username: process.env.MC_USERNAME || 'CHANGE_ME',
   version: process.env.MC_VERSION || false,
-  loginPassword: process.env.LOGIN_PASSWORD || '898989',
-  commandOwners: parseOwners(process.env.COMMAND_OWNERS || process.env.COMMAND_OWNER || 'RUSSIAN_GRIZZLY,quochiii'),
+  loginPassword: process.env.LOGIN_PASSWORD || '',
+  commandOwners: parseOwners(process.env.COMMAND_OWNERS || process.env.COMMAND_OWNER || ''),
   autoEatItem: process.env.AUTO_EAT_ITEM || 'cooked_porkchop',
   autoEatHealthThreshold: Number.parseFloat(process.env.AUTO_EAT_HEALTH_THRESHOLD || '5'),
   autoEatFoodThreshold: Number.parseInt(process.env.AUTO_EAT_FOOD_THRESHOLD || '5', 10),
@@ -37,8 +37,8 @@ let loginSent = false;
 let lobbySpawnPos = null;
 let isEating = false;
 
-if (config.host === 'CHANGE_ME') {
-  console.error('Set MC_HOST before starting the bot.');
+if (config.host === 'CHANGE_ME' || config.username === 'CHANGE_ME') {
+  console.error('Set MC_HOST and MC_USERNAME before starting the bot.');
   process.exit(1);
 }
 
