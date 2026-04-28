@@ -111,8 +111,12 @@ DEBUG=1
 - `AUTO_EAT_ITEM` - название еды в инвентаре.
 - `AUTO_EAT_HEALTH_THRESHOLD` - порог HP для еды.
 - `AUTO_EAT_FOOD_THRESHOLD` - порог сытости для еды.
+- `AUTO_EAT_TIMEOUT_MS` - таймаут попытки поесть.
 - `STATUS_INTERVAL_MS` - как часто писать статус в консоль.
 - `RECONNECT_DELAY_MS` - сколько ждать перед переподключением после вылета.
+- `SPAWN_WAIT_JITTER_MS`, `NPC_PUNCH_DELAY_JITTER_MS`, `ANTI_AFK_INTERVAL_JITTER_MS`, `RECONNECT_DELAY_JITTER_MS` - случайный разброс таймингов, чтобы действия не были слишком механическими.
+- `PLAYER_LIST_ENABLED=1` - включает живой лог списка игроков.
+- `PLAYER_LIST_INTERVAL_MS=60000` - как часто печатать полный список игроков.
 - `DEBUG` - `1` включает подробные служебные логи.
 
 ## Как Запустить
@@ -175,6 +179,8 @@ npm run check
 - вылеты и переподключения;
 - попытки поесть;
 - команды от игроков.
+- входы и выходы игроков, если включен `PLAYER_LIST_ENABLED=1`;
+- периодический полный список онлайна, если включен `PLAYER_LIST_ENABLED=1`.
 
 Самая полезная настройка для отладки:
 
@@ -218,6 +224,110 @@ Ctrl + C
 - не передавай свой реальный `.env`;
 - не коммить `.env` в GitHub;
 - у каждого человека должны быть свои логин, ник и настройки.
+
+## Отдельная Версия Для Лицензионного Аккаунта
+
+В проекте есть отдельный минимальный бот для лицензионного аккаунта без антибот-защиты:
+
+- файл: `premium-afk.js`
+- запуск: `npm run start:premium`
+- шаблон настроек: `.env.premium.example`
+
+Что он делает:
+
+- заходит через `Microsoft`-авторизацию;
+- сразу зажимает `sneak`;
+- редко крутит головой;
+- переподключается после дисконнекта.
+
+Как настроить:
+
+1. Скопируй `.env.premium.example` в `.env.premium`
+2. Заполни:
+   - `MC_HOST`
+   - `MC_PORT`
+   - `MC_USERNAME`
+   - `MC_AUTH=microsoft`
+3. Запусти:
+
+```bash
+npm run start:premium
+```
+
+На первом запуске mineflayer может попросить пройти вход в Microsoft-аккаунт.
+
+### Premium На VPS
+
+Если хочешь держать именно лицензионного AFK-бота на VPS, ставь его как отдельный сервис, не поверх обычного `minebot.service`.
+
+Подготовленные файлы:
+
+- `premium-afk.js` - сам premium-бот;
+- `.env.premium.example` - шаблон настроек;
+- `minebot-premium.service` - отдельный `systemd`-юнит под VPS.
+
+Рекомендуемый порядок:
+
+1. Залей проект в `/opt/minebot`
+2. Установи зависимости:
+
+```bash
+cd /opt/minebot
+npm ci
+```
+
+3. Создай настройки:
+
+```bash
+cp .env.premium.example .env.premium
+```
+
+4. Заполни `.env.premium`:
+
+- `MC_HOST`
+- `MC_PORT`
+- `MC_USERNAME`
+- `MC_AUTH=microsoft`
+- для VPS лучше сразу поставить `MAP_CAPTCHA_AUTO_OPEN=0`
+
+5. Проверь запуск вручную:
+
+```bash
+cd /opt/minebot
+npm run check:premium
+npm run start:premium
+```
+
+6. На первом запуске заверши `Microsoft`-авторизацию, если mineflayer ее попросит.
+7. После ручной проверки поставь сервис:
+
+```bash
+sudo cp /opt/minebot/minebot-premium.service /etc/systemd/system/minebot-premium.service
+sudo systemctl daemon-reload
+sudo systemctl enable minebot-premium
+sudo systemctl start minebot-premium
+```
+
+8. Проверка состояния:
+
+```bash
+sudo systemctl status minebot-premium
+journalctl -u minebot-premium -f
+```
+
+9. Основные команды управления:
+
+```bash
+sudo systemctl restart minebot-premium
+sudo systemctl stop minebot-premium
+sudo systemctl start minebot-premium
+```
+
+Важно:
+
+- не запускай `minebot-premium` и обычный `minebot` под одним и тем же аккаунтом Minecraft одновременно;
+- сначала добейся успешного ручного логина, и только потом включай автозапуск;
+- если на VPS нет GUI, автoоткрытие капчи должно быть выключено: `MAP_CAPTCHA_AUTO_OPEN=0`.
 
 ## Частые Проблемы
 

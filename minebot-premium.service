@@ -1,0 +1,17 @@
+[Unit]
+Description=Mineflayer Premium AFK Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=minebot
+Group=minebot
+WorkingDirectory=/opt/minebot
+ExecStart=/usr/bin/node -r dotenv/config /opt/minebot/premium-afk.js dotenv_config_path=/opt/minebot/.env.premium
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
